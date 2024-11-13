@@ -21,7 +21,7 @@ const userService = {
 		if(!(await bcrypt.compare(password, user.password))) return {message: 'Email or Password is not correct!'}
 
 		const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '1 day'});
-		return {email, token}
+		return {user, token}
 	},
 
 	fetchUsers: async () => {
