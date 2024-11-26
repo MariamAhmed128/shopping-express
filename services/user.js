@@ -35,10 +35,14 @@ const userService = {
 	},
 
 	isRetailer: async (user) => {
+		if(!user) return false;
+
 		return user.role === 'retailer';
 	},
 
 	isCustomer: async (user) => {
+		if(!user) return false;
+
 		return user.role === 'customer';
 	}
 }

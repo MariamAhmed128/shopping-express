@@ -22,7 +22,7 @@ const ordersController = {
 	addCart: async (req, res) => {
 		try {
 			const order = await orderService.addToCart(req, res);
-			res.status(200).send(order);
+			res.status(201).send(order);
 		} catch(err) {
 			res.status(400).send(err);
 		}

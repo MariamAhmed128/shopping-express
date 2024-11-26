@@ -47,6 +47,8 @@ const orderService = {
 			order.userId = req.user._id;
 			await order.save();
 		});
+
+		req.session.productIds = [];
 		return {message: 'Successfully purchaged the orders'}
 	}
 }

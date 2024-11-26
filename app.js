@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
 const connectDB = require('./db');
 connectDB();
 
-const port = process.env.PORT;
+const port = 5000;
 app.listen(port, () => {
 	console.log(`Application is running on PORT: ${port}`);
 }).on('error', (err) => {
