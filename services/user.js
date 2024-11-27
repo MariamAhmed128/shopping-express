@@ -17,8 +17,8 @@ const userService = {
 	signin: async (req) => {
 		const {email, password} = req.body;
 		const user = await User.findOne({ email: email })
-		if(!user) return {message: `User with ${email} doesn't exist`};
-		if(!(await bcrypt.compare(password, user.password))) return {message: 'Email or Password is not correct!'}
+		if(!user) return {error: true, message: `User with ${email} doesn't exist`};
+		if(!(await bcrypt.compare(password, user.password))) return {error: true, message: 'Email or Password is not correct!'}
 
 		const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '1 day'});
 		return {user, token}
