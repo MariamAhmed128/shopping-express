@@ -13,6 +13,8 @@ app.use(session({
 	cookie: { maxAge: 24 * 60 * 60 * 60 }
 }));
 
+app.use('/uploads', express.static('uploads'));
+
 const { userRouter, productRouter, orderRouter } = require('./routes');
 app.use('/api/v1', userRouter);
 app.use('/api/v1', productRouter);

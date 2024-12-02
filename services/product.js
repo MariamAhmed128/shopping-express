@@ -15,18 +15,18 @@ const productService = {
 	},
 
 	getProducts: async (req, res) => {
-		const products = await Product.find(await productService.setFilters(req));
+		const products = await Product.find(await productService.setFilters(req)).sort({createdAt: -1});
 		return products;
 	},
 
 	getProductsByIds: async (ids) => {
-		console.log("IDS come here:", ids)
 		const products = await Product.find({_id: {$in: ids}});
 		return products;
 	},
 
 	createProduct: async (req, res) => {
-		const product = new Product(req.body);
+		const imageUrls = req.files.map(file => `/uploads/${file.filename}`);
+		const product = new Product({...req.body, images: imageUrls});
 		product.userId = req.user._id;
 		await product.save()
 		return product;
@@ -38,7 +38,8 @@ const productService = {
 	},
 
 	updateProduct: async (req, res) => {
-		const product = await Product.findOneAndUpdate(await productService.setFilters(req), req.body, {new: true});
+		const imageUrls = req.files.map(file => `/uploads/${file.filename}`);
+		const product = await Product.findOneAndUpdate(await productService.setFilters(req), {...req.body, images: imageUrls}, {new: true});
 		return product || {message: 'You are not authorised to update this product.'};
 	},
 
