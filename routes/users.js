@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { usersController } = require('./../controllers');
-const userValidator = require('./../validators/user');
-const authenticate = require('./../middleware/isAuthorised');
+const { usersController } = require('../controllers');
+const userValidator = require('../validators/user');
+const authenticate = require('../middleware/isAuthorised');
 
 router.post('/signup', userValidator.validateSignup, async (req, res) => {
 	await usersController.signup(req, res);

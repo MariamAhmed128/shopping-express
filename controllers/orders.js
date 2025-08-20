@@ -1,4 +1,4 @@
-const { orderService } = require('./../services');
+const { orderService } = require('../services');
 
 const ordersController = {
 	index: async (req, res) => {

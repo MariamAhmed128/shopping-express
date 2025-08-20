@@ -1,5 +1,5 @@
-const { Product } = require('./../models');
-const userService = require('./../services/user');
+const { Product } = require('../models');
+const userService = require('./user');
 
 const productService = {
 	isRetailer: async(user) => {

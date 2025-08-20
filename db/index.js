@@ -1,17 +1,18 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose');  // ← مهم جداً
 const dotenv = require('dotenv');
 dotenv.config();
-const mongodbUri = process.env.MONGODB_URI;
-const databaseName = 'shopping_express';
 
 const connectDB = async () => {
-	try {
-		console.log('Trying to connect Mongodb...')
-		await mongoose.connect(`${mongodbUri}/${databaseName}`)
-		console.log(`MongoDB connected and the database name is: "${databaseName}"`)
-	} catch (err) {
-		console.log(err)
-	}
-}
+  try {
+    console.log('Trying to connect Mongodb...');
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    });
+    console.log('MongoDB connected');
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 module.exports = connectDB;

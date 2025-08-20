@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { userService } = require('./../services');
+const { userService } = require('../services');
 const dotenv = require('dotenv');
 dotenv.config();
 

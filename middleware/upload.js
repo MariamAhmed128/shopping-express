@@ -1,4 +1,4 @@
-const upload = require('./../config/multer');
+const upload = require('../config/multer');
 const imageUploder = upload.array('images', 10)
 
 const uploader = {
@@ -8,7 +8,7 @@ const uploader = {
 
       if(!req.files || !req.files.length) return res.status(400).send({messaage: 'Atleast 1 image should be uploaded'});
   
-      if(req.files.length > 6) return res.status(400).send({messaage: 'Maximum images count should be 6'});
+      if(req.files.length > 6) return res.status(400).send({messaage: 'Maximum images count should be 10'});
     
       next();
     });

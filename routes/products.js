@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { productsController } = require('./../controllers');
-const authenticate = require('./../middleware/isAuthorised');
-const uploader = require('./../middleware/upload');
+const { productsController } = require('../controllers');
+const authenticate = require('../middleware/isAuthorised');
+const uploader = require('../middleware/upload');
 
 router.get('/products', async (req, res) => {
 	await productsController.index(req, res);

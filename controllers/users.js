@@ -1,4 +1,5 @@
-const { userService } = require('./../services');
+const userService = require('../services/user.js');
+
 
 const usersController = {
 	signup: async (req, res) => {
