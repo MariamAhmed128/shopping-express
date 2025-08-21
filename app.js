@@ -16,15 +16,16 @@ app.use(helmet());
 const hpp =require('hpp')
 const cors = require('cors')
 
+
 app.use(hpp())
 app.use(cors({
-  origin : 'http://localhost:3000' ,
+  origin : 'http://localhost:5000' ,
 }))
-
+             
 //3
 const ratelimit = require('express-rate-limit')
 const limiter = ratelimit({
-  windowMs : 15 * 60 * 1000 ,    //900,000 مللي ثانية==15 دقيقة بالظبط.
+  windowMs : 15 * 60 * 1000 ,   
   max : 100 ,
   message : "Too many requests from this IP , please try again later"
 })
@@ -32,21 +33,21 @@ app.use(limiter)
 //4
 const mongoSanitize = require('mongo-sanitize')
 app.use((req , res , next )=>{
-  req.body = mongoSanitize(req.body) ,
-  req.query = mongoSanitize(req.query) ,
-  req.params = mongoSanitize(req.params) ,
+  req.body = mongoSanitize(req.body) ;
+  req.query = mongoSanitize(req.query) ;
+  req.params = mongoSanitize(req.params) ;
   next()  
-})
+});
 // =====================
 // Middleware
 // =====================
 
 
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'mysecretkey', // لازم يكون string
+  secret: process.env.SESSION_SECRET || 'mysecretkey', 
   resave: false,
   saveUninitialized: true,
-  cookie: { maxAge: 24 * 60 * 60 * 1000 } // 24 ساعة بالملي ثانية
+  cookie: { maxAge: 24 * 60 * 60 * 1000 } 
 }));
 
 app.use('/uploads', express.static('uploads'));

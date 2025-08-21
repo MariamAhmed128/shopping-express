@@ -13,6 +13,7 @@ const authenticate = {
 			if (err) return res.sendStatus(403);
 
 			const currentUser = await userService.fetchUserById(user.id);
+
 			req.user = currentUser;
 			next();
 		});

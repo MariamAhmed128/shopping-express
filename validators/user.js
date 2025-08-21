@@ -11,7 +11,7 @@ const userValidator = {
 
 	validateLogin: (req, res, next) => {
 		const {email, password} = req.body;
-		if(!email || !password) return res.status(401).send({error: true, message: 'Email and Password required'});
+		if(!email || !password) return res.status(400).send({error: true, message: 'Email and Password required'});
 
 		next();
 	}

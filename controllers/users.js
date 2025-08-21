@@ -10,16 +10,15 @@ const usersController = {
 			res.status(400).send(err);
 		}
 	},
-
 	signin: async (req, res) => {
 		try {
-			const user = await userService.signin(req);
-			res.status(201).send(user);
+			const { email, password } = req.body;
+			const user = await userService.signin(email, password); 
+			res.status(200).send(user);  
 		} catch(err) {
-			res.status(400).send(err);
+			res.status(400).send({ error: true, message: err.message || err });
 		}
 	},
-
 	index: async (req, res) => {
 		try {
 			const users = await userService.fetchUsers();

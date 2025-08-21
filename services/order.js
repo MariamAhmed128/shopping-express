@@ -4,6 +4,7 @@ const productService  = require('./product');
 const orderService = {
 	getOrders: async (req, res) => {
 		const orders = await Order.find();
+		console.log("req.user._id =>", req.user._id);
 		return orders;
 	},
 
@@ -12,15 +13,24 @@ const orderService = {
 	},
 
 	addToCart: async (req, res) => {
-		if(!req.session.productIds) req.session.productIds = [];
-		
-		if(req.session.productIds.includes(req.params.productId)) {
-			return {message: 'This product is already added to the cart'}
+		try {
+			const { productId } = req.params;
+			const { userId, price, quantity } = req.body;
+
+			const order = new Order({
+				productId,
+				userId,
+				price,
+				quantity
+			});
+
+			const savedOrder = await order.save();
+
+			return { message: 'Order created successfully', order: savedOrder };
+		} catch (error) {
+			console.error(error);
+			return { message: 'Failed to create order', error };
 		}
-
-		req.session.productIds.push(req.params.productId);
-
-		return req.session.productIds;
 	},
 
 	removeFromCart: async (req, res) => {
@@ -31,26 +41,32 @@ const orderService = {
 
 		return {message: 'Product removed from the cart'}
 	},
+	purchage: async (req) => {
+		try {
+			// هات كل الأوردرات اللي لسه في الكارت (created)
+			const orders = await Order.find({ userId: req.user._id, status: 'created' });
 
-	purchage: async (req, res) => {
-		const productIds = req.session.productIds;
+			if (!orders.length) {
+				return { message: "No orders purchaged" };
+			}
 
-		if(!productIds || (productIds && !productIds.length)) return {message: 'No orders purchaged'}
+			// عدل حالة الأوردرات لـ purchased
+			for (const order of orders) {
+				// order.status = "purchased";
+				order.status = 'created'; // أو 'pickedup' حسب منطق التطبيق
+				await order.save();
+			}
 
-		productIds.forEach(async proId => {
-			const products = await productService.getProductsByIds([proId]);
-			const product = products[0]
-			const order = new Order()
-			order.productId = product._id;
-			order.price = product.price;
-			order.quantity = product.quantity; 
-			order.userId = req.user._id;
-			await order.save();
-		});
+			return {
+				message: "Successfully purchaged the orders",
+				orders
+			};
+		} catch (err) {
+			throw err;
+		}
+	},
 
-		req.session.productIds = [];
-		return {message: 'Successfully purchaged the orders'}
-	}
+
 }
 
 module.exports = orderService;
