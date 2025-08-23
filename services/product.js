@@ -5,14 +5,48 @@ const productService = {
 	isRetailer: async(user) => {
 		return await userService.isRetailer(user);
 	},
+// this.الاصليه
+	// setFilters: async (req) => {
+	// 	const filters = { status: 'opened' };
+	// 	if(req.params.id) filters._id = req.params.id;
+	// 	const isRetailer = await productService.isRetailer(req.user);
+	// 	if(isRetailer) filters.userId = req.user._id;
+	// 	return filters;
+	// },
 
+	// setFilters: async (req) => {
+	// 	const filters = {};
+	// 	filters.status = req.query.status || 'opened';
+	// 	if(req.params.id) filters._id = req.params.id;
+	// 	if(req.query.title) filters.title = req.query.title;
+	// 	const isRetailer = await productService.isRetailer(req.user);
+	// 	if(isRetailer) filters.userId = req.user._id;
+	// 	return filters;
+	// },
+
+	// setFilters: async (req) => {
+	// 	const filters = {};
+	// 	filters.status = req.query.status || 'opened';
+	// 	if (req.params.id) filters._id = req.params.id;
+	// 	if (req.query.title) filters.title = { $regex: req.query.title, $options: 'i' };
+	// 	if (req.user) {
+	// 		const isRetailer = await productService.isRetailer(req.user);
+	// 		if (isRetailer) filters.userId = req.user._id;
+	// 	}
+	// 	return filters;
+	// },
 	setFilters: async (req) => {
-		const filters = { status: 'opened' };
-		if(req.params.id) filters._id = req.params.id;
+		const filters = {};
+
+		if(req.query.status) filters.status = req.query.status;
+		if(req.query.title) filters.title = req.query.title;
+
 		const isRetailer = await productService.isRetailer(req.user);
 		if(isRetailer) filters.userId = req.user._id;
+
 		return filters;
 	},
+
 
 	getProducts: async (req, res) => {
 		const products = await Product.find(await productService.setFilters(req)).sort({createdAt: -1});

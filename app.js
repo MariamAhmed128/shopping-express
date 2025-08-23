@@ -9,7 +9,7 @@ app.use(express.json());
 // =====================
 // protact
 // =====================
-//1
+ //1
 const helmet = require('helmet')
 app.use(helmet());
 //2
@@ -55,10 +55,11 @@ app.use('/uploads', express.static('uploads'));
 // =====================
 // Routes
 // =====================
-const { userRouter, productRouter, orderRouter } = require('./routes');
+const { userRouter, productRouter, orderRouter} = require('./routes');
 app.use('/api/v1', userRouter);
 app.use('/api/v1', productRouter);
 app.use('/api/v1', orderRouter);
+// app.use('/api/v1/password', passwordResetRoutes);
 
 app.get('/', (req, res) => {
   res.status(200).send('App is working');
@@ -82,7 +83,6 @@ app.get('/test-session', (req, res) => {
 // =====================
 const connectDB = require('./db');
 connectDB();
-
 // =====================
 // Start Server
 // =====================
