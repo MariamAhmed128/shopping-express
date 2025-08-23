@@ -13,10 +13,36 @@ router.get('/products/:id', async (req, res) => {
 });
 
 router.use(authenticate.isAuthorised);
+// الاصلية
+// router.post('/products', authenticate.isRetailer, uploader.fileCheck, async (req, res) => {
+// 	await productsController.create(req, res);
+// });
 
-router.post('/products', authenticate.isRetailer, uploader.fileCheck, async (req, res) => {
-	await productsController.create(req, res);
-});
+// router.post(
+//   '/products',
+//   authenticate.isRetailer,
+//   uploader.fileCheck, 
+  
+//   async (req, res) => {
+//     await productsController.create(req, res);
+//   }
+//   console.log("Uploaded files:", req.files);
+
+// );
+router.post(
+  '/products',
+  authenticate.isRetailer,
+  uploader.fileCheck,
+  (req, res, next) => {
+    console.log("Uploaded files:", req.files); // ← هنا نطبع الملفات
+    next(); // نروح لـ productsController.create
+  },
+  async (req, res) => {
+    await productsController.create(req, res);
+  }
+);
+
+
 // router.post('/products',authenticate.isAuthorised,isRetailer,uploader.fileCheck,productsController.create)
 
 router.patch('/products/:id', authenticate.isRetailer, uploader.fileCheck, async (req, res) => {

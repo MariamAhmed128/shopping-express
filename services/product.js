@@ -94,20 +94,53 @@ const productService = {
 	// },
 
 	//for Cloudinary
-	updateProduct: async (req, res) => {
-		const uploadPromises = req.files.map(file =>
-			cloudinary.uploader.upload(file.path, { folder: "products" })
-		);
-		const uploadResults = await Promise.all(uploadPromises);
-		const imageUrls = uploadResults.map(result => result.secure_url);
+	// updateProduct: async (req, res) => {
+	// 	const uploadPromises = req.files.map(file =>
+	// 		cloudinary.uploader.upload(file.path, { folder: "products" })
+	// 	);
+	// 	const uploadResults = await Promise.all(uploadPromises);
+	// 	const imageUrls = uploadResults.map(result => result.secure_url);
 
-		const product = await Product.findOneAndUpdate(
-			await productService.setFilters(req),
-			{ ...req.body, images: imageUrls },
-			{ new: true }
-		);
-		return product || { message: "You are not authorised to update this product." };
+	// 	const product = await Product.findOneAndUpdate(
+	// 		await productService.setFilters(req),
+	// 		{ ...req.body, images: imageUrls },
+	// 		{ new: true }
+	// 	);
+	// 	return product || { message: "You are not authorised to update this product." };
+	// },
+	
+	// لمنع الكراش لو مفيش صور جديدة
+	updateProduct: async (req, res) => {
+		try {
+			let imageUrls;
+
+			// لو فيه صور جديدة
+			if (req.files && req.files.length > 0) {
+				const uploadPromises = req.files.map(file =>
+					cloudinary.uploader.upload(file.path, { folder: "products" })
+				);
+				const uploadResults = await Promise.all(uploadPromises);
+				imageUrls = uploadResults.map(result => result.secure_url);
+			}
+
+			// بناء الداتا اللي هتتحدث
+			const updateData = { ...req.body };
+			if (imageUrls) {
+				updateData.images = imageUrls;
+			}
+
+			const product = await Product.findOneAndUpdate(
+				await productService.setFilters(req),
+				updateData,
+				{ new: true }
+			);
+
+			return product || { message: "You are not authorised to update this product." };
+		} catch (err) {
+			throw err;
+		}
 	},
+
 
 
 	deleteProduct: async (req, res) => {
