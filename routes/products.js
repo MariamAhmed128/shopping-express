@@ -17,6 +17,7 @@ router.use(authenticate.isAuthorised);
 router.post('/products', authenticate.isRetailer, uploader.fileCheck, async (req, res) => {
 	await productsController.create(req, res);
 });
+// router.post('/products',authenticate.isAuthorised,isRetailer,uploader.fileCheck,productsController.create)
 
 router.patch('/products/:id', authenticate.isRetailer, uploader.fileCheck, async (req, res) => {
 	await productsController.update(req, res);

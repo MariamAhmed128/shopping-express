@@ -1,5 +1,6 @@
 const { Product } = require('../models');
 const userService = require('./user');
+const cloudinary = require("../config/cloudinary");
 
 const productService = {
 	isRetailer: async(user) => {
@@ -57,12 +58,27 @@ const productService = {
 		const products = await Product.find({_id: {$in: ids}});
 		return products;
 	},
+	// this.الاصليه
+	// createProduct: async (req, res) => {
+	// 	const imageUrls = req.files.map(file => `/uploads/${file.filename}`);
+	// 	const product = new Product({...req.body, images: imageUrls});
+	// 	product.userId = req.user._id;
+	// 	await product.save()
+	// 	return product;
+	// },
 
+	//for Cloudinary
 	createProduct: async (req, res) => {
-		const imageUrls = req.files.map(file => `/uploads/${file.filename}`);
-		const product = new Product({...req.body, images: imageUrls});
+		// رفع الصور كلها على cloudinary
+		const uploadPromises = req.files.map(file =>
+			cloudinary.uploader.upload(file.path, { folder: "products" })
+		);
+		const uploadResults = await Promise.all(uploadPromises);
+		const imageUrls = uploadResults.map(result => result.secure_url);
+
+		const product = new Product({ ...req.body, images: imageUrls });
 		product.userId = req.user._id;
-		await product.save()
+		await product.save();
 		return product;
 	},
 
@@ -70,12 +86,29 @@ const productService = {
 		const product = await Product.findOne(await productService.setFilters(req))
 		return product || {message: 'Product doesn\'t exist or you are not authorised.'};
 	},
+	// this.الاصليه
+	// updateProduct: async (req, res) => {
+	// 	const imageUrls = req.files.map(file => `/uploads/${file.filename}`);
+	// 	const product = await Product.findOneAndUpdate(await productService.setFilters(req), {...req.body, images: imageUrls}, {new: true});
+	// 	return product || {message: 'You are not authorised to update this product.'};
+	// },
 
+	//for Cloudinary
 	updateProduct: async (req, res) => {
-		const imageUrls = req.files.map(file => `/uploads/${file.filename}`);
-		const product = await Product.findOneAndUpdate(await productService.setFilters(req), {...req.body, images: imageUrls}, {new: true});
-		return product || {message: 'You are not authorised to update this product.'};
+		const uploadPromises = req.files.map(file =>
+			cloudinary.uploader.upload(file.path, { folder: "products" })
+		);
+		const uploadResults = await Promise.all(uploadPromises);
+		const imageUrls = uploadResults.map(result => result.secure_url);
+
+		const product = await Product.findOneAndUpdate(
+			await productService.setFilters(req),
+			{ ...req.body, images: imageUrls },
+			{ new: true }
+		);
+		return product || { message: "You are not authorised to update this product." };
 	},
+
 
 	deleteProduct: async (req, res) => {
 		const product = await Product.deleteOne(await productService.setFilters(req));
