@@ -14,15 +14,15 @@ const userService = {
 		return {name, email, role};
 	},
 
-	signin: async (req) => {
-		const {email, password} = req.body;
-		const user = await User.findOne({ email: email })
-		if(!user) return {error: true, message: `User with ${email} doesn't exist`};
-		if(!(await bcrypt.compare(password, user.password))) return {error: true, message: 'Email or Password is not correct!'}
+	// signin: async (req) => {
+	// 	const {email, password} = req.body;
+	// 	const user = await User.findOne({ email: email })
+	// 	if(!user) return {error: true, message: `User with ${email} doesn't exist`};
+	// 	if(!(await bcrypt.compare(password, user.password))) return {error: true, message: 'Email or Password is not correct!'}
 
-		const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '1 day'});
-		return {user, token}
-	},
+	// 	const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '1 day'});
+	// 	return {user, token}
+	// },
 	signin: async (email, password) => {
 		const user = await User.findOne({ email: email });
 		if (!user) {
